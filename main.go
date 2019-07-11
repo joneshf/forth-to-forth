@@ -11,7 +11,7 @@ func main() {
 	stack = append(stack, "5")
 	stack = append(stack, "6")
 	stack = append(stack, "+")
-	stack = append(stack, "2")
+	stack = append(stack, "dup")
 	stack = append(stack, "-")
 	output := consume(stack)
 	fmt.Printf("stack: %#v, output: %#v\n", stack, output)
@@ -47,6 +47,10 @@ func consume(stack []string) []string {
 				panic(err)
 			}
 			result = append(result, strconv.Itoa(parsedLeft-parsedRight))
+		case "dup":
+			var right string
+			result, right = pop(result)
+			result = append(result, right, right)
 
 		default:
 			result = append(result, word)
