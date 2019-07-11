@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 )
@@ -14,7 +13,7 @@ func main() {
 	stack = append(stack, "dup")
 	stack = append(stack, "-")
 	output := consume(stack)
-	fmt.Printf("stack: %#v, output: %#v\n", stack, output)
+	log.Printf("stack: %#v, output: %#v\n", stack, output)
 }
 
 func consume(stack []string) []string {
@@ -55,7 +54,7 @@ func consume(stack []string) []string {
 		default:
 			result = append(result, word)
 		}
-		log.Printf("end of loop result: %#v\n", result)
+		//log.Printf("end of loop result: %#v\n", result)
 	}
 	return result
 }
