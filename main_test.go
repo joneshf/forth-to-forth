@@ -21,6 +21,10 @@ func TestDup(t *testing.T) {
 	runstack(t, []string {"5", "dup"}, []string {"5", "5"})
 }
 
+func TestDrop(t *testing.T) {
+	runstack(t, []string {"5", "6", "drop"}, []string {"5"})
+}
+
 func TestSwap(t *testing.T) {
 	runstack(t, []string {"5", "6", "swap"}, []string {"6", "5"})
 }

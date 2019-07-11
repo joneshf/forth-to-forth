@@ -51,6 +51,9 @@ func consume(stack []string) []string {
 			result, right = pop(result)
 			result = append(result, right, right)
 
+		case "drop":
+			result, _ = pop(result)
+
 		case "swap":
 			var first, second string
 			result, first = pop(result)
