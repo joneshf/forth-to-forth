@@ -34,6 +34,15 @@ func TestDup(t *testing.T) {
 	assert.DeepEqual(t, output, []string {"0"})
 }
 
+func TestSwap(t *testing.T) {
+	var stack []string
+	stack = append(stack, "5")
+	stack = append(stack, "6")
+	stack = append(stack, "swap")
+	output := consume(stack)
+	assert.DeepEqual(t, output, []string {"6", "5"})
+}
+
 func TestOver(t *testing.T) {
 	var stack []string
 	stack = append(stack, "5")
