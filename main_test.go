@@ -6,59 +6,36 @@ import (
 )
 
 func TestAdd(t *testing.T) {
-	var stack []string
-	stack = append(stack, "5")
-	stack = append(stack, "6")
-	stack = append(stack, "+")
-	output := consume(stack)
+	output := consume([]string {"5", "6", "+"})
 	assert.DeepEqual(t, output, []string {"11"})
 }
 
 func TestSub(t *testing.T) {
-	var stack []string
-	stack = append(stack, "7")
-	stack = append(stack, "3")
-	stack = append(stack, "-")
-	output := consume(stack)
+	output := consume([]string {"7", "3", "-"})
 	assert.DeepEqual(t, output, []string {"4"})
 }
 
 func TestDup(t *testing.T) {
-	var stack []string
-	stack = append(stack, "5")
-	stack = append(stack, "6")
-	stack = append(stack, "+")
-	stack = append(stack, "dup")
-	stack = append(stack, "-")
-	output := consume(stack)
-	assert.DeepEqual(t, output, []string {"0"})
+	output := consume([]string {"5", "dup"})
+	assert.DeepEqual(t, output, []string {"5", "5"})
 }
 
 func TestSwap(t *testing.T) {
-	var stack []string
-	stack = append(stack, "5")
-	stack = append(stack, "6")
-	stack = append(stack, "swap")
-	output := consume(stack)
+	output := consume([]string {"5", "6", "swap"})
 	assert.DeepEqual(t, output, []string {"6", "5"})
 }
 
 func TestOver(t *testing.T) {
-	var stack []string
-	stack = append(stack, "5")
-	stack = append(stack, "6")
-	stack = append(stack, "over")
-	output := consume(stack)
+	output := consume([]string {"5", "6", "over"})
 	assert.DeepEqual(t, output, []string {"5", "6", "5"})
 }
 
 func TestRot(t *testing.T) {
-	var stack []string
-	stack = append(stack, "5")
-	stack = append(stack, "6")
-	stack = append(stack, "7")
-	stack = append(stack, "rot")
-	output := consume(stack)
+	output := consume([]string {"5", "6", "7", "rot"})
 	assert.DeepEqual(t, output, []string {"6", "7", "5"})
 }
 
+func TestMultiple(t *testing.T) {
+	output := consume([]string {"5", "6", "+", "dup", "-"})
+	assert.DeepEqual(t, output, []string {"0"})
+}
