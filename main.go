@@ -51,6 +51,12 @@ func consume(stack []string) []string {
 			result, right = pop(result)
 			result = append(result, right, right)
 
+		case "over":
+			var first, second string
+			result, first = pop(result)
+			result, second = pop(result)
+			result = append(result, second, first, second)
+
 		default:
 			result = append(result, word)
 		}
