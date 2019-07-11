@@ -11,6 +11,8 @@ func main() {
 	stack = append(stack, "5")
 	stack = append(stack, "6")
 	stack = append(stack, "+")
+	stack = append(stack, "2")
+	stack = append(stack, "-")
 	output := consume(stack)
 	fmt.Printf("stack: %#v, output: %#v\n", stack, output)
 }
@@ -21,8 +23,8 @@ func consume(stack []string) []string {
 		switch word {
 		case "+":
 			var left, right string
-			result, left = pop(result)
 			result, right = pop(result)
+			result, left = pop(result)
 			parsedLeft, err := strconv.Atoi(left)
 			if err != nil {
 				panic(err)
@@ -32,6 +34,19 @@ func consume(stack []string) []string {
 				panic(err)
 			}
 			result = append(result, strconv.Itoa(parsedLeft+parsedRight))
+		case "-":
+			var left, right string
+			result, right = pop(result)
+			result, left = pop(result)
+			parsedLeft, err := strconv.Atoi(left)
+			if err != nil {
+				panic(err)
+			}
+			parsedRight, err := strconv.Atoi(right)
+			if err != nil {
+				panic(err)
+			}
+			result = append(result, strconv.Itoa(parsedLeft-parsedRight))
 
 		default:
 			result = append(result, word)
