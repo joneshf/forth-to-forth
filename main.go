@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
 	var stack []string
 	stack = append(stack, "5")
