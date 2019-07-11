@@ -46,6 +46,7 @@ func consume(stack []string) []string {
 				panic(err)
 			}
 			result = append(result, strconv.Itoa(parsedLeft-parsedRight))
+
 		case "dup":
 			var right string
 			result, right = pop(result)
@@ -72,7 +73,16 @@ func consume(stack []string) []string {
 			result, second = pop(result)
 			result, third = pop(result)
 			result = append(result, second, first, third)
-
+			// *, /, mod, =, <, >
+			// KEY (-- c) read stdin
+			// EMIT (c --) write stdin
+			// WORD (-- address length) (also CREATE)
+			// NUMBER (-- n)
+			// ! (data address --) write
+			// @ (address -- data) read
+			// BRANCH OFFSET (--) increment IP
+			// 0BRANCHH OFFSET (cond --) increments IP
+			// NEXT, CALL, DOCOL, EXIT, LIT?
 		default:
 			result = append(result, word)
 		}
