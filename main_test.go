@@ -43,3 +43,13 @@ func TestOver(t *testing.T) {
 	assert.DeepEqual(t, output, []string {"5", "6", "5"})
 }
 
+func TestRot(t *testing.T) {
+	var stack []string
+	stack = append(stack, "5")
+	stack = append(stack, "6")
+	stack = append(stack, "7")
+	stack = append(stack, "rot")
+	output := consume(stack)
+	assert.DeepEqual(t, output, []string {"6", "7", "5"})
+}
+

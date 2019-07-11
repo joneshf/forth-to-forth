@@ -57,6 +57,13 @@ func consume(stack []string) []string {
 			result, second = pop(result)
 			result = append(result, second, first, second)
 
+		case "rot":
+			var first, second, third string
+			result, first = pop(result)
+			result, second = pop(result)
+			result, third = pop(result)
+			result = append(result, second, first, third)
+
 		default:
 			result = append(result, word)
 		}
