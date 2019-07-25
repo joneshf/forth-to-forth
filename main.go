@@ -16,10 +16,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
-		stack = append(stack, parse(scanner.Text())...)
-		output := consume(stack, env)
-		//log.Printf("stack: %#v, output: %#v\n", stack, output)
-		stack = output
+		stack = consume(stack, parse(scanner.Text()), env)
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
@@ -30,24 +27,23 @@ func parse(input string) []string {
 	return strings.Fields(input)
 }
 
-func consume(stack []string, env map[string][]string) []string {
-	var result []string
-	for _, word := range stack {
-		result = step(word, result, env)
+func consume(stack, input []string, env map[string][]string) []string {
+	for _, word := range input {
+		stack = step(word, stack, env)
 	}
-	return result
+	return stack
 }
 
 func pop(stack []string) ([]string, string) {
 	return stack[:len(stack)-1], stack[len(stack)-1]
 }
 
-func step(word string, result []string, env map[string][]string) []string {
+func step(word string, stack []string, env map[string][]string) []string {
 	switch word {
 	case "+":
 		var left, right string
-		result, right = pop(result)
-		result, left = pop(result)
+		stack, right = pop(stack)
+		stack, left = pop(stack)
 		parsedLeft, err := strconv.Atoi(left)
 		if err != nil {
 			panic(err)
@@ -56,11 +52,11 @@ func step(word string, result []string, env map[string][]string) []string {
 		if err != nil {
 			panic(err)
 		}
-		result = append(result, strconv.Itoa(parsedLeft+parsedRight))
+		stack = append(stack, strconv.Itoa(parsedLeft+parsedRight))
 	case "-":
 		var left, right string
-		result, right = pop(result)
-		result, left = pop(result)
+		stack, right = pop(stack)
+		stack, left = pop(stack)
 		parsedLeft, err := strconv.Atoi(left)
 		if err != nil {
 			panic(err)
@@ -69,42 +65,42 @@ func step(word string, result []string, env map[string][]string) []string {
 		if err != nil {
 			panic(err)
 		}
-		result = append(result, strconv.Itoa(parsedLeft-parsedRight))
+		stack = append(stack, strconv.Itoa(parsedLeft-parsedRight))
 
 	case "dup":
 		var right string
-		result, right = pop(result)
-		result = append(result, right, right)
+		stack, right = pop(stack)
+		stack = append(stack, right, right)
 
 	case "drop":
-		result, _ = pop(result)
+		stack, _ = pop(stack)
 
 	case "swap":
 		var first, second string
-		result, first = pop(result)
-		result, second = pop(result)
-		result = append(result, first, second)
+		stack, first = pop(stack)
+		stack, second = pop(stack)
+		stack = append(stack, first, second)
 
 	case "over":
 		var first, second string
-		result, first = pop(result)
-		result, second = pop(result)
-		result = append(result, second, first, second)
+		stack, first = pop(stack)
+		stack, second = pop(stack)
+		stack = append(stack, second, first, second)
 
 	case "rot":
 		var first, second, third string
-		result, first = pop(result)
-		result, second = pop(result)
-		result, third = pop(result)
-		result = append(result, second, first, third)
+		stack, first = pop(stack)
+		stack, second = pop(stack)
+		stack, third = pop(stack)
+		stack = append(stack, second, first, third)
 
 	case ".":
 		var first string
-		result, first = pop(result)
+		stack, first = pop(stack)
 		fmt.Println(first)
 
 	case ".s":
-		fmt.Printf("<%d> %s\n", len(result), result)
+		fmt.Printf("<%d> %s\n", len(stack), stack)
 
 		// *, /, mod, =, <, >
 		// KEY (-- c) read stdin
@@ -122,10 +118,10 @@ func step(word string, result []string, env map[string][]string) []string {
 			// Something isn't quite right here.
 			// We seem to be restarting with the original stack each time.
 
-			result = consume(append(result, instructions...), env)
+			stack = consume(stack, instructions, env)
 		} else {
-			result = append(result, word)
+			stack = append(stack, word)
 		}
 	}
-	return result
+	return stack
 }
