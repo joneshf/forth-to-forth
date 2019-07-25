@@ -85,6 +85,15 @@ func consume(stack []string) []string {
 			result, second = pop(result)
 			result, third = pop(result)
 			result = append(result, second, first, third)
+
+		case ".":
+			var first string
+			result, first = pop(result)
+			fmt.Println(first)
+
+		case ".s":
+			fmt.Printf("<%d> %s\n",len(result),result)
+
 			// *, /, mod, =, <, >
 			// KEY (-- c) read stdin
 			// EMIT (c --) write stdin
