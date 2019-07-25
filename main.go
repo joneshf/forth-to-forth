@@ -13,10 +13,11 @@ import (
 func main() {
 	var stack []string;
 	scanner := bufio.NewScanner(os.Stdin)
+	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
 		stack = append(stack, parse(scanner.Text())...)
 		output := consume(stack)
-		log.Printf("stack: %#v, output: %#v\n", stack, output)
+		//log.Printf("stack: %#v, output: %#v\n", stack, output)
 		stack = output
 	}
 	if err := scanner.Err(); err != nil {
