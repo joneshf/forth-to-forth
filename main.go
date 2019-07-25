@@ -11,7 +11,7 @@ import (
 
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
-	var stack []string;
+	var stack []string
 	scanner := bufio.NewScanner(os.Stdin)
 	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
@@ -93,7 +93,7 @@ func consume(stack []string) []string {
 			fmt.Println(first)
 
 		case ".s":
-			fmt.Printf("<%d> %s\n",len(result),result)
+			fmt.Printf("<%d> %s\n", len(result), result)
 
 			// *, /, mod, =, <, >
 			// KEY (-- c) read stdin
