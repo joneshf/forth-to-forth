@@ -1,20 +1,26 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"log"
+	"os"
 	"strconv"
+	"strings"
 )
 
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
-	var stack []string
-	stack = append(stack, "5")
-	stack = append(stack, "6")
-	stack = append(stack, "+")
-	stack = append(stack, "dup")
-	stack = append(stack, "-")
-	output := consume(stack)
-	log.Printf("stack: %#v, output: %#v\n", stack, output)
+	var stack []string;
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		stack = parse(scanner.Text())
+		output := consume(stack)
+		log.Printf("stack: %#v, output: %#v\n", stack, output)
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+	}
 }
 
 func parse(input string) []string {
