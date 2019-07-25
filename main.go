@@ -17,6 +17,10 @@ func main() {
 	log.Printf("stack: %#v, output: %#v\n", stack, output)
 }
 
+func parse(input string) []string {
+	return strings.Fields(input)
+}
+
 func consume(stack []string) []string {
 	var result []string
 	for _, word := range stack {

@@ -40,3 +40,8 @@ func TestRot(t *testing.T) {
 func TestMultiple(t *testing.T) {
 	runstack(t, []string {"5", "6", "+", "dup", "-"}, []string {"0"})
 }
+
+func TestParse(t *testing.T) {
+	assert.DeepEqual(t, parse("5 6 + dup -"),
+		[]string {"5", "6", "+", "dup", "-"})
+}
