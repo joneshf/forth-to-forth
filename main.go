@@ -14,9 +14,10 @@ func main() {
 	var stack []string;
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		stack = parse(scanner.Text())
+		stack = append(stack, parse(scanner.Text())...)
 		output := consume(stack)
 		log.Printf("stack: %#v, output: %#v\n", stack, output)
+		stack = output
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
