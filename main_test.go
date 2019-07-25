@@ -7,6 +7,10 @@ import (
 
 func runstack(t *testing.T, before []string, after []string) {
 	env := map[string][]string{}
+	runstackWithEnv(t, before, after, env)
+}
+
+func runstackWithEnv(t *testing.T, before []string, after []string, env map[string][]string) {
 	assert.DeepEqual(t, consume(before, env), after)
 }
 
@@ -40,6 +44,13 @@ func TestRot(t *testing.T) {
 
 func TestMultiple(t *testing.T) {
 	runstack(t, []string{"5", "6", "+", "dup", "-"}, []string{"0"})
+}
+
+func TestLookup(t *testing.T) {
+	env := map[string][]string{
+		"plus5": parse("5 +"),
+	}
+	runstackWithEnv(t, []string{"6", "plus5"}, []string{"11"}, env)
 }
 
 func TestParse(t *testing.T) {

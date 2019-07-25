@@ -12,9 +12,7 @@ import (
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
 	var stack []string
-	env := map[string][]string{
-		"plus5": parse("5 +"),
-	}
+	var env map[string][]string
 	scanner := bufio.NewScanner(os.Stdin)
 	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
