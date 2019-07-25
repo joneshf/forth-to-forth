@@ -12,11 +12,14 @@ import (
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
 	var stack []string
+	env := map[string][]string{
+		"plus5": parse("5 +"),
+	}
 	scanner := bufio.NewScanner(os.Stdin)
 	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
 		stack = append(stack, parse(scanner.Text())...)
-		output := consume(stack)
+		output := consume(stack, env)
 		//log.Printf("stack: %#v, output: %#v\n", stack, output)
 		stack = output
 	}
@@ -29,7 +32,7 @@ func parse(input string) []string {
 	return strings.Fields(input)
 }
 
-func consume(stack []string) []string {
+func consume(stack []string, env map[string][]string) []string {
 	var result []string
 	for _, word := range stack {
 		switch word {
@@ -106,7 +109,12 @@ func consume(stack []string) []string {
 			// 0BRANCHH OFFSET (cond --) increments IP
 			// NEXT, CALL, DOCOL, EXIT, LIT?
 		default:
-			result = append(result, word)
+			instructions, found := env[word]
+			if found {
+				result = consume(append(result, instructions...), env)
+			} else {
+				result = append(result, word)
+			}
 		}
 		//log.Printf("end of loop result: %#v\n", result)
 	}

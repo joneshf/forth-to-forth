@@ -6,7 +6,8 @@ import (
 )
 
 func runstack(t *testing.T, before []string, after []string) {
-	assert.DeepEqual(t, consume(before), after)
+	env := map[string][]string{}
+	assert.DeepEqual(t, consume(before, env), after)
 }
 
 func TestAdd(t *testing.T) {
