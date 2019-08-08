@@ -12,16 +12,16 @@ import (
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
 	var stack []string
-	var env = make(map[string][]string);
-	var compile = false
+	var env = make(map[string][]string)
+	var compile = ""
 	scanner := bufio.NewScanner(os.Stdin)
 	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
 		stack, compile = consume(stack, parse(scanner.Text()), compile, env)
-		if compile {
-			fmt.Println("compiled")
-		} else {
+		if compile == "" {
 			fmt.Println("ok")
+		} else {
+			fmt.Println("compiled")
 		}
 	}
 	if err := scanner.Err(); err != nil {
@@ -33,15 +33,19 @@ func parse(input string) []string {
 	return strings.Fields(input)
 }
 
-func consume(stack, input []string, compile bool, env map[string][]string) ([]string, bool) {
+func consume(stack, input []string, compile string, env map[string][]string) ([]string, string) {
 	var index = 0
-	for(index < len(input)) {
-		if !compile {
+	for index < len(input) {
+		word := input[index]
+		if word == ":" {
+			var definition = input[index+1]
+			var rest = input[index+2:]
+			return compiled(definition, rest, stack, env)
+		}
+		if compile == "" {
 			stack, compile = interpret(input[index], stack, env)
 		} else {
-			var definition = input[index]
-			var rest = input[index+1:]
-			return compiled(definition, rest, stack, env)
+			return compiled(compile, input, stack, env)
 		}
 		index += 1
 	}
@@ -49,15 +53,15 @@ func consume(stack, input []string, compile bool, env map[string][]string) ([]st
 	return stack, compile
 }
 
-func compiled(definition string, input []string, stack []string, env map[string][]string) ([]string, bool) {
-	var index = 0;
-	var compile = true
-	env[definition] = []string {};
-	for(index < len(input)) {
+func compiled(definition string, input []string, stack []string, env map[string][]string) ([]string, string) {
+	var index = 0
+	var compile = definition
+	env[definition] = []string{}
+	for index < len(input) {
 		var word = input[index]
-		if(compile) {
+		if compile != "" {
 			if word == ";" {
-				compile = false
+				compile = ""
 			} else {
 				env[definition] = append(env[definition], word)
 			}
@@ -73,8 +77,8 @@ func pop(stack []string) ([]string, string) {
 	return stack[:len(stack)-1], stack[len(stack)-1]
 }
 
-func interpret(word string, stack []string, env map[string][]string) ([]string, bool) {
-	var compile = false;
+func interpret(word string, stack []string, env map[string][]string) ([]string, string) {
+	var compile = ""
 	switch word {
 	case "+":
 		var left, right string
@@ -138,19 +142,16 @@ func interpret(word string, stack []string, env map[string][]string) ([]string, 
 	case ".s":
 		fmt.Printf("<%d> %s\n", len(stack), stack)
 
-		// *, /, mod, =, <, >
-		// KEY (-- c) read stdin
-		// EMIT (c --) write stdin
-		// WORD (-- address length) (also CREATE)
-		// NUMBER (-- n)
-		// ! (data address --) write
-		// @ (address -- data) read
-		// BRANCH OFFSET (--) increment IP
-		// 0BRANCHH OFFSET (cond --) increments IP
-		// NEXT, CALL, DOCOL, EXIT, LIT?
-
-  case ":":
-		compile = true
+	// *, /, mod, =, <, >
+	// KEY (-- c) read stdin
+	// EMIT (c --) write stdin
+	// WORD (-- address length) (also CREATE)
+	// NUMBER (-- n)
+	// ! (data address --) write
+	// @ (address -- data) read
+	// BRANCH OFFSET (--) increment IP
+	// 0BRANCHH OFFSET (cond --) increments IP
+	// NEXT, CALL, DOCOL, EXIT, LIT?
 
 	default:
 		instructions, found := env[word]
