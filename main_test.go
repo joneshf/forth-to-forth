@@ -72,6 +72,19 @@ func TestRedefineWord(t *testing.T) {
 	runstack(t, parse(": foo 1 ; foo : foo 2 ; foo"), []string{"1", "2"})
 }
 
+func TestDefineIsReentrant(t *testing.T) {
+	var env = make(map[string][]string);
+	var compile = false
+	var stack []string
+	stack, compile = consume(stack, parse("2 : foo"), false, env)
+	assert.DeepEqual(t, stack, []string{"2"})
+	assert.Assert(t, compile)
+	stack, compile = consume(stack, parse("1 ; foo"), compile, env)
+	assert.Assert(t, !compile)
+	assert.DeepEqual(t, stack, []string{"2", "1"})
+	assert.DeepEqual(t, env["foo"], []string{"1"})
+}
+
 func TestParse(t *testing.T) {
 	assert.DeepEqual(t, parse("5 6 + dup -"),
 		[]string{"5", "6", "+", "dup", "-"})
