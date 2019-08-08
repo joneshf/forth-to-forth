@@ -62,6 +62,16 @@ func TestLookupTwice(t *testing.T) {
 	runstackWithEnv(t, []string{"0", "plus5", "plus5"}, []string{"10"}, env)
 }
 
+func TestDefineWord(t *testing.T) {
+	runstack(t, parse(": foo 1 2 + ; foo"), []string{"3"})
+	runstack(t, parse("1 : foo 2 + ; foo"), []string{"3"})
+	runstack(t, parse("1 2 : foo + ; foo"), []string{"3"})
+}
+
+func TestRedefineWord(t *testing.T) {
+	runstack(t, parse(": foo 1 ; foo : foo 2 ; foo"), []string{"1", "2"})
+}
+
 func TestParse(t *testing.T) {
 	assert.DeepEqual(t, parse("5 6 + dup -"),
 		[]string{"5", "6", "+", "dup", "-"})
