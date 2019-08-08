@@ -29,7 +29,7 @@ func parse(input string) []string {
 
 func consume(stack, input []string, env map[string][]string) []string {
 	for _, word := range input {
-		stack = step(word, stack, env)
+		stack = interpret(word, stack, env)
 	}
 	return stack
 }
@@ -38,7 +38,7 @@ func pop(stack []string) ([]string, string) {
 	return stack[:len(stack)-1], stack[len(stack)-1]
 }
 
-func step(word string, stack []string, env map[string][]string) []string {
+func interpret(word string, stack []string, env map[string][]string) []string {
 	switch word {
 	case "+":
 		var left, right string
