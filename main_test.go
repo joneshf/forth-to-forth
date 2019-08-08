@@ -76,13 +76,13 @@ func TestDefineIsReentrant(t *testing.T) {
 	var env = make(map[string][]string)
 	var compile = ""
 	var stack []string
-	stack, compile = consume(stack, parse("2 : foo"), compile, env)
+	stack, compile = consume(stack, parse("2 : foo 1"), compile, env)
 	assert.DeepEqual(t, stack, []string{"2"})
 	assert.Equal(t, compile, "foo")
-	stack, compile = consume(stack, parse("1 ; foo"), compile, env)
+	stack, compile = consume(stack, parse("3 ; foo"), compile, env)
 	assert.Equal(t, compile, "")
-	assert.DeepEqual(t, stack, []string{"2", "1"})
-	assert.DeepEqual(t, env["foo"], []string{"1"})
+	assert.DeepEqual(t, stack, []string{"2", "1", "3"})
+	assert.DeepEqual(t, env["foo"], []string{"1", "3"})
 }
 
 func TestParse(t *testing.T) {

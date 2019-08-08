@@ -40,6 +40,7 @@ func consume(stack, input []string, compile string, env map[string][]string) ([]
 		if word == ":" {
 			var definition = input[index+1]
 			var rest = input[index+2:]
+			env[definition] = []string{}
 			return compiled(definition, rest, stack, env)
 		}
 		if compile == "" {
@@ -56,7 +57,6 @@ func consume(stack, input []string, compile string, env map[string][]string) ([]
 func compiled(definition string, input []string, stack []string, env map[string][]string) ([]string, string) {
 	var index = 0
 	var compile = definition
-	env[definition] = []string{}
 	for index < len(input) {
 		var word = input[index]
 		if compile != "" {
