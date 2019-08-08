@@ -12,7 +12,8 @@ func runstack(t *testing.T, before []string, after []string) {
 
 func runstackWithEnv(t *testing.T, before []string, after []string, env map[string][]string) {
 	var stack []string
-	assert.DeepEqual(t, consume(stack, before, env), after)
+	stack, _ = consume(stack, before, false, env)
+	assert.DeepEqual(t, stack, after)
 }
 
 func TestAdd(t *testing.T) {

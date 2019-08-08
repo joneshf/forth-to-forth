@@ -12,11 +12,17 @@ import (
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
 	var stack []string
-	var env map[string][]string
+	var env = make(map[string][]string);
+	var compile = false
 	scanner := bufio.NewScanner(os.Stdin)
 	log.Printf("Starting forth-to-forth\n")
 	for scanner.Scan() {
-		stack = consume(stack, parse(scanner.Text()), env)
+		stack, compile = consume(stack, parse(scanner.Text()), compile, env)
+		if compile {
+			fmt.Println("compiled")
+		} else {
+			fmt.Println("ok")
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
@@ -27,18 +33,48 @@ func parse(input string) []string {
 	return strings.Fields(input)
 }
 
-func consume(stack, input []string, env map[string][]string) []string {
-	for _, word := range input {
-		stack = interpret(word, stack, env)
+func consume(stack, input []string, compile bool, env map[string][]string) ([]string, bool) {
+	var index = 0
+	for(index < len(input)) {
+		if !compile {
+			stack, compile = interpret(input[index], stack, env)
+		} else {
+			var definition = input[index]
+			var rest = input[index+1:]
+			return compiled(definition, rest, stack, env)
+		}
+		index += 1
 	}
-	return stack
+
+	return stack, compile
+}
+
+func compiled(definition string, input []string, stack []string, env map[string][]string) ([]string, bool) {
+	var index = 0;
+	var compile = true
+	env[definition] = []string {};
+	for(index < len(input)) {
+		var word = input[index]
+		if(compile) {
+			if word == ";" {
+				compile = false
+			} else {
+				env[definition] = append(env[definition], word)
+			}
+		} else {
+			return consume(stack, input[index:], compile, env)
+		}
+		index += 1
+	}
+	return stack, compile
 }
 
 func pop(stack []string) ([]string, string) {
 	return stack[:len(stack)-1], stack[len(stack)-1]
 }
 
-func interpret(word string, stack []string, env map[string][]string) []string {
+func interpret(word string, stack []string, env map[string][]string) ([]string, bool) {
+	var compile = false;
 	switch word {
 	case "+":
 		var left, right string
@@ -112,16 +148,20 @@ func interpret(word string, stack []string, env map[string][]string) []string {
 		// BRANCH OFFSET (--) increment IP
 		// 0BRANCHH OFFSET (cond --) increments IP
 		// NEXT, CALL, DOCOL, EXIT, LIT?
+
+  case ":":
+		compile = true
+
 	default:
 		instructions, found := env[word]
 		if found {
 			// Something isn't quite right here.
 			// We seem to be restarting with the original stack each time.
 
-			stack = consume(stack, instructions, env)
+			stack, compile = consume(stack, instructions, compile, env)
 		} else {
 			stack = append(stack, word)
 		}
 	}
-	return stack
+	return stack, compile
 }
