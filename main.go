@@ -34,10 +34,16 @@ func parse(input string) []string {
 }
 
 func consume(stack, input []string, compile string, env map[string][]string) ([]string, string) {
+	if compile == ": undefined" {
+		input = append([]string{":"}, input...)
+	}
 	var index = 0
 	for index < len(input) {
 		word := input[index]
 		if word == ":" {
+			if index+1 == len(input) {
+				return stack, ": undefined"
+			}
 			var definition = input[index+1]
 			var rest = input[index+2:]
 			env[definition] = []string{}

@@ -85,6 +85,19 @@ func TestDefineIsReentrant(t *testing.T) {
 	assert.DeepEqual(t, env["foo"], []string{"1", "3"})
 }
 
+func TestDefineHandlesDefinitionsOverMultipleLines(t *testing.T) {
+	var env = make(map[string][]string)
+	var compile = ""
+	var stack []string
+	stack, compile = consume(stack, parse(":"), compile, env)
+	assert.Equal(t, len(stack), 0)
+	assert.Equal(t, compile, ": undefined")
+	stack, compile = consume(stack, parse("foo 2 ; foo"), compile, env)
+	assert.Equal(t, compile, "")
+	assert.DeepEqual(t, stack, []string{"2"})
+	assert.DeepEqual(t, env["foo"], []string{"2"})
+}
+
 func TestParse(t *testing.T) {
 	assert.DeepEqual(t, parse("5 6 + dup -"),
 		[]string{"5", "6", "+", "dup", "-"})
