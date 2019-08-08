@@ -156,9 +156,6 @@ func interpret(word string, stack []string, env map[string][]string) ([]string, 
 	default:
 		instructions, found := env[word]
 		if found {
-			// Something isn't quite right here.
-			// We seem to be restarting with the original stack each time.
-
 			stack, compile = consume(stack, instructions, compile, env)
 		} else {
 			stack = append(stack, word)
