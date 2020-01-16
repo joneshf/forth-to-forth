@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+const undefinedWord = ": undefined"
+
 // vaguely following: https://www.sifflez.org/lectures/ASE/C3.pdf
 func main() {
 	var stack []string
@@ -34,7 +36,7 @@ func parse(input string) []string {
 }
 
 func consume(stack, input []string, compile string, env map[string][]string) ([]string, string) {
-	if compile == ": undefined" {
+	if compile == undefinedWord {
 		input = append([]string{":"}, input...)
 	}
 	var index = 0
@@ -42,7 +44,7 @@ func consume(stack, input []string, compile string, env map[string][]string) ([]
 		word := input[index]
 		if word == ":" {
 			if index+1 == len(input) {
-				return stack, ": undefined"
+				return stack, undefinedWord
 			}
 			var definition = input[index+1]
 			var rest = input[index+2:]
