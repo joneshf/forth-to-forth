@@ -1,0 +1,25 @@
+* Project Goals
+
+* Functionality we want to explore
+
+Currently we store everything as a stack, but much of forth needs to deal with raw addresses (for LITERAL, CALL, !, @, BEGIN, etc). So we may have written our implementation into a corner that it can't escape from.
+
+Specifically, when looking at: https://www.forth.com/starting-forth/11-forth-compiler-defining-words/ in order to investigate how to define another definition inside compile mode.
+
+The following is invalid in gforth but there are ways to escape compile mode.
+#+begin_src forth
+: foo : bar 1 2 + ; bar ;
+#+end_src
+
+For instance, =[= and =]= start and stop immediate mode from within compilation mode.
+
+#+begin_src forth
+: SAY-HELLO  ." Hello " ;
+: GREET  [ SAY-HELLO ] ." I speak Forth " ;
+#+end_src
+
+And then LITERAL lets us use that value from the stack somehow?
+
+Anyway we should do something to support words in that direction which likely
+involves dealing with raw addresses instead of a go level stack.
+
